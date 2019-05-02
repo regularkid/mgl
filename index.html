@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+    <head>
+        <!-- Global Site Tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-106572464-1"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments)};
+        gtag('js', new Date());
+
+        gtag('config', 'UA-106572464-1');
+        </script>
+
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="/css/style.css" />
+        <style>
+        canvas
+        {  
+            image-rendering: -moz-crisp-edges;
+            image-rendering: -webkit-crisp-edges;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+        </style>
+        <title>Super Micro Fun - Micro GL</title>
+    </head>
+    <body>
+        <script src="/header.js"></script>
+
+        <div id="content">
+            <center>
+                <h1>Micro GL</h1>
+                <h4>Apr. --, 2019</h4>
+                <div id="game"></div>
+                <canvas id="canvas" width="200" height="150" style="width:800px; height:600px; background-color:black"></canvas>
+                <br/><br/>
+
+                <script src="src/main.js"></script>
+            </center>
+
+            <br/>
+            <br/>
+
+            <div id="info">
+                <br/>
+                <b>What Is This?</b><br/>
+                --<br/><br/>
+
+                <b>How Long Did It Take?</b><br/>
+                --<br/><br/>
+
+                <b>How Many Lines of Code?</b><br/>
+                --<br/><br/>
+            </div>
+
+            <script src="/footer.js"></script>
+        </div>
+    </body>
+</html>
