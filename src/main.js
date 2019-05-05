@@ -9,8 +9,7 @@ function GameLoop(curTime)
     let dt = Math.min((curTime - lastTime) / 1000.0, 0.2);	
     lastTime = curTime;
 
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    mgl.ClearBuffers();
 
     // DEBUG
     var rotateAngle = (180.0 * (Math.PI / 180.0)) * dt;
@@ -22,8 +21,10 @@ function GameLoop(curTime)
                                  new Vec3(0.0, 0.0, 0.0));
 
     cube.tm = cube.tm.MultiplyMatrix4x4(tmRotate);
-    
+
     mgl.RenderObject(cube, "#F00");
+
+    mgl.RenderBuffers();
 
     //TEMP!	
     ctx.font = `Bold 16px Arial`;	

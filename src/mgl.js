@@ -13,30 +13,49 @@ class MGL
     PerspectiveProjection(p)
     {
         return new Vec3(((p.x / p.z) * this.screenHalfWidthOverAspectRatio) + this.screenHalfWidth,
-                        ((p.y / p.z) * this.screenHalfHeight) + this.screenHalfHeight,
-                        0.0);
+                        -((p.y / p.z) * this.screenHalfHeight) + this.screenHalfHeight,
+                        p.z);
+    }
+
+    ClearBuffers()
+    {
+        this.ctx.fillStyle = "#000";
+        this.ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        this.polys = [];
+    }
+
+    RenderBuffers()
+    {
+        this.polys.sort((a, b) => b.zAvg - a.zAvg);
+
+        for (let i = 0; i < this.polys.length; i++)
+        {
+            let poly = this.polys[i];
+
+            this.ctx.fillStyle = poly.color;
+            this.ctx.beginPath();
+
+            this.ctx.moveTo(poly.pa.x, poly.pa.y);
+            this.ctx.lineTo(poly.pb.x, poly.pb.y);
+            this.ctx.lineTo(poly.pc.x, poly.pc.y);
+
+            this.ctx.fill();
+        }
     }
 
     RenderObject(obj, color)
     {
         for (let i = 0; i < obj.indices.length; i += 3)
         {
-            this.ctx.fillStyle = color;
-            this.ctx.beginPath();
-
             let pa = obj.tm.TransformPoint(obj.verts[obj.indices[i]]);
             let pb = obj.tm.TransformPoint(obj.verts[obj.indices[i + 1]]);
             let pc = obj.tm.TransformPoint(obj.verts[obj.indices[i + 2]]);
 
-            pa = this.PerspectiveProjection(pa);
-            pb = this.PerspectiveProjection(pb);
-            pc = this.PerspectiveProjection(pc);
-
-            this.ctx.moveTo(pa.x, pa.y);
-            this.ctx.lineTo(pb.x, pb.y);
-            this.ctx.lineTo(pc.x, pc.y);
-
-            this.ctx.fill();
+            this.polys.push(new Polygon(this.PerspectiveProjection(pa),
+                                        this.PerspectiveProjection(pb),
+                                        this.PerspectiveProjection(pc),
+                                        obj.colors[i]));
         }
     }
 }
