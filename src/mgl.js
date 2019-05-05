@@ -24,9 +24,13 @@ class MGL
             this.ctx.fillStyle = color;
             this.ctx.beginPath();
 
-            let pa = this.PerspectiveProjection(obj.verts[obj.indices[i]]);
-            let pb = this.PerspectiveProjection(obj.verts[obj.indices[i + 1]]);
-            let pc = this.PerspectiveProjection(obj.verts[obj.indices[i + 2]]);
+            let pa = obj.tm.TransformPoint(obj.verts[obj.indices[i]]);
+            let pb = obj.tm.TransformPoint(obj.verts[obj.indices[i + 1]]);
+            let pc = obj.tm.TransformPoint(obj.verts[obj.indices[i + 2]]);
+
+            pa = this.PerspectiveProjection(pa);
+            pb = this.PerspectiveProjection(pb);
+            pc = this.PerspectiveProjection(pc);
 
             this.ctx.moveTo(pa.x, pa.y);
             this.ctx.lineTo(pb.x, pb.y);

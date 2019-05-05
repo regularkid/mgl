@@ -12,22 +12,17 @@ function GameLoop(curTime)
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // let numTris = 1000;
-    // let colors = ["#F00", "#0F0", "#00F", "#FF0", "#F0F", "#0FF"];
-    // for (let i = 0; i < numTris; i++)
-    // {
-    //     let randColorIdx = Math.floor(Math.random()*colors.length);
-    //     ctx.fillStyle = colors[randColorIdx];
-    //     ctx.beginPath();
+    // DEBUG
+    var rotateAngle = (180.0 * (Math.PI / 180.0)) * dt;
+    var cosAngle = Math.cos(rotateAngle);
+    var sinAngle = Math.sin(rotateAngle);
+    var tmRotate = new Matrix4x4(new Vec3(cosAngle, 0.0, sinAngle),
+                                 new Vec3(0.0, 1.0, 0.0),
+                                 new Vec3(-sinAngle, 0.0, cosAngle),
+                                 new Vec3(0.0, 0.0, 0.0));
 
-    //     let x = Math.random()*canvas.width;
-    //     let y = Math.random()*canvas.height;
-    //     ctx.moveTo(x, y);
-    //     ctx.lineTo(x + Math.random()*100, y + Math.random()*100);
-    //     ctx.lineTo(x + Math.random()*100, y + Math.random()*100);
-    //     ctx.fill();
-    // }
-
+    cube.tm = cube.tm.MultiplyMatrix4x4(tmRotate);
+    
     mgl.RenderObject(cube, "#F00");
 
     //TEMP!	
