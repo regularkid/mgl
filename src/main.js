@@ -20,6 +20,16 @@ function GameLoop(curTime)
                                  new Vec3(-sinAngle, 0.0, cosAngle),
                                  new Vec3(0.0, 0.0, 0.0));
 
+    rotateAngle = (90.0 * (Math.PI / 180.0)) * dt;
+    cosAngle = Math.cos(rotateAngle);
+    sinAngle = Math.sin(rotateAngle);
+    var tmRotate2 = new Matrix4x4(new Vec3(1.0, 0.0, 0.0),
+                                 new Vec3(0.0, cosAngle, sinAngle),
+                                 new Vec3(0.0, -sinAngle, cosAngle),
+                                 new Vec3(0.0, 0.0, 0.0));
+
+    tmRotate = tmRotate.MultiplyMatrix4x4(tmRotate2);
+
     cube.tm = cube.tm.MultiplyMatrix4x4(tmRotate);
 
     mgl.RenderObject(cube, "#F00");
