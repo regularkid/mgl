@@ -24,8 +24,8 @@ function GameLoop(curTime)
     cosAngle = Math.cos(rotateAngle);
     sinAngle = Math.sin(rotateAngle);
     var tmRotate2 = new Matrix4x4(new Vec3(1.0, 0.0, 0.0),
-                                 new Vec3(0.0, cosAngle, sinAngle),
-                                 new Vec3(0.0, -sinAngle, cosAngle),
+                                 new Vec3(0.0, cosAngle, -sinAngle),
+                                 new Vec3(0.0, sinAngle, cosAngle),
                                  new Vec3(0.0, 0.0, 0.0));
 
     tmRotate.MultiplyMatrix4x4Self(tmRotate2);
