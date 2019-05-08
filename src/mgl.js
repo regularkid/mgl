@@ -29,7 +29,7 @@ class MGL
 
     RenderBuffers()
     {
-        this.polys.sort((a, b) => b.zAvg - a.zAvg);
+        this.polys.sort((a, b) => a.zAvg - b.zAvg);
 
         for (let i = 0; i < this.polys.length; i++)
         {
@@ -74,7 +74,7 @@ class MGL
                 let pixelIdxEnd = (y * this.canvas.width) + right;
                 while (pixelIdx <= pixelIdxEnd)
                 {
-                    this.framebuffer32Bit[pixelIdx] = poly.color;
+                    this.framebuffer32Bit[pixelIdx] = poly.paColor;
                     pixelIdx++;
                 }
             }
@@ -96,7 +96,7 @@ class MGL
             let pbc = pc.Sub(pb);
             let n = pab.Cross(pbc);
             let dot = n.Dot(pa);
-            if (dot <= 0)
+            if (dot >= 0)
             {
                 continue;
             }
@@ -104,7 +104,9 @@ class MGL
             this.polys.push(new Polygon(this.PerspectiveProjection(pa),
                                         this.PerspectiveProjection(pb),
                                         this.PerspectiveProjection(pc),
-                                        obj.colors[i]));
+                                        obj.colors[obj.indices[i]],
+                                        obj.colors[obj.indices[i + 1]],
+                                        obj.colors[obj.indices[i + 2]]));
         }
     }
 }
