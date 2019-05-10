@@ -4,11 +4,14 @@ class MGL
     {
         this.canvas = canvas;
         this.ctx = ctx;
-        this.framebuffer = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        this.screenWidth = this.canvas.width;
+        this.screenHeight = this.canvas.height;
+        this.screenHalfWidth = Math.floor(this.screenWidth * 0.5);
+        this.screenHalfHeight = Math.floor(this.screenHeight * 0.5);
+
+        this.framebuffer = ctx.getImageData(0, 0, this.screenWidth, this.screenHeight);
         this.framebuffer32Bit = new Uint32Array(this.framebuffer.data.buffer);
 
-        this.screenHalfWidth = Math.floor(canvas.width * 0.5);
-        this.screenHalfHeight = Math.floor(canvas.height * 0.5);
         this.screenHalfWidthOverAspectRatio = this.screenHalfWidth / aspectRatio;
         this.viewPlaneHalfWidth = aspectRatio;
         this.viewPlaneHalfHeight = 1.0;
@@ -67,9 +70,9 @@ class MGL
                         w1 *= triArea2Reciprocal;
                         w2 *= triArea2Reciprocal;
 
-                        this.framebuffer32Bit[(y * this.canvas.width) + x] = poly.paColor.Get32BitMultiplied(w0) +
-                                                                             poly.pbColor.Get32BitMultiplied(w1) +
-                                                                             poly.pcColor.Get32BitMultiplied(w2);
+                        this.framebuffer32Bit[(y * this.screenWidth) + x] = poly.paColor.Get32BitMultiplied(w0) +
+                                                                            poly.pbColor.Get32BitMultiplied(w1) +
+                                                                            poly.pcColor.Get32BitMultiplied(w2);
                     }
                 }
             }
