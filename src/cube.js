@@ -27,14 +27,14 @@ class Cube
         this.indices.push(2); this.indices.push(1); this.indices.push(0);
 
         this.colors = [];
-        this.colors.push(0xFF0000FF);
-        this.colors.push(0xFF00FF00);
-        this.colors.push(0xFFFF0000);
-        this.colors.push(0xFF00FFFF);
-        this.colors.push(0xFFFF00FF);
-        this.colors.push(0xFFFFFF00);
-        this.colors.push(0xFFFFFFFF);
-        this.colors.push(0xFFFFFFFF);
+        this.colors.push(new Color(255, 0, 0));
+        this.colors.push(new Color(0, 255, 0));
+        this.colors.push(new Color(20, 0, 255));
+        this.colors.push(new Color(255, 255, 0));
+        this.colors.push(new Color(255, 0, 255));
+        this.colors.push(new Color(0, 255, 255));
+        this.colors.push(new Color(255, 255, 255));
+        this.colors.push(new Color(128, 128, 128));
 
         this.tm = new Matrix4x4(new Vec3(1, 0, 0),
                                 new Vec3(0, 1, 0),
