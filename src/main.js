@@ -2,6 +2,7 @@ var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d", { alpha: false });
 var lastTime = 0;
 var mgl = new MGL(canvas, ctx, 800/600);
+var texWall = new Texture("./textures/wall.png");
 var cube = new Cube(new Vec3(0, 0, -5.0), 1.0);
 
 function GameLoop(curTime)

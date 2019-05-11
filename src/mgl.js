@@ -42,10 +42,13 @@ class MGL
             let xMax = Math.round(Math.max(poly.pa.x, Math.max(poly.pb.x, poly.pc.x)));
             let yMin = Math.round(Math.min(poly.pa.y, Math.min(poly.pb.y, poly.pc.y)));
             let yMax = Math.round(Math.max(poly.pa.y, Math.max(poly.pb.y, poly.pc.y)));
-
             let p = new Vec3(0, 0, 0);
+
+            // Vales used for barycentric coordinates
             let w0, w1, w2 = 0.0;
-            let triArea2Reciprocal = 1.0 / this.SignedParallelogramArea(poly.pa, poly.pb, poly.pc);
+            let triArea2Reciprocal = 1.0 / this.SignedParallelogramArea2D(poly.pa, poly.pb, poly.pc);
+
+            // Values used to calculate perspective correct interpolation
             let paColorOverZ = new Color(poly.paColor.r / poly.pa.z, poly.paColor.g / poly.pa.z, poly.paColor.b / poly.pa.z);
             let pbColorOverZ = new Color(poly.pbColor.r / poly.pb.z, poly.pbColor.g / poly.pb.z, poly.pbColor.b / poly.pb.z);
             let pcColorOverZ = new Color(poly.pcColor.r / poly.pc.z, poly.pcColor.g / poly.pc.z, poly.pcColor.b / poly.pc.z);
@@ -54,6 +57,10 @@ class MGL
             let pbOneOverZ = 1.0 / poly.pb.z;
             let pcOneOverZ = 1.0 / poly.pc.z;
             let ptOneOverZ = 0.0;
+            let paUVOverZ = new Vec3(poly.paUV.x / poly.pa.z, poly.paUV.y / poly.pa.z);
+            let pbUVOverZ = new Vec3(poly.pbUV.x / poly.pb.z, poly.pbUV.y / poly.pb.z);
+            let pcUVOverZ = new Vec3(poly.pcUV.x / poly.pc.z, poly.pcUV.y / poly.pc.z);
+            let ptUV = new Vec3(0.0, 0.0, 0.0);
 
             for (let y = yMin; y <= yMax; y++)
             {
@@ -62,9 +69,10 @@ class MGL
                     p.x = x;
                     p.y = y;
 
-                    w0 = this.SignedParallelogramArea(poly.pb, poly.pc, p);
-                    w1 = this.SignedParallelogramArea(poly.pc, poly.pa, p);
-                    w2 = this.SignedParallelogramArea(poly.pa, poly.pb, p);
+                    // Is point inside tri?
+                    w0 = this.SignedParallelogramArea2D(poly.pb, poly.pc, p);
+                    w1 = this.SignedParallelogramArea2D(poly.pc, poly.pa, p);
+                    w2 = this.SignedParallelogramArea2D(poly.pa, poly.pb, p);
 
                     if (w0 > 0.0 && w1 > 0.0 && w2 > 0.0)
                     {
@@ -78,8 +86,11 @@ class MGL
                         ptColor.r = (paColorOverZ.r*w0 + pbColorOverZ.r*w1 + pcColorOverZ.r*w2) * ptOneOverZ;
                         ptColor.g = (paColorOverZ.g*w0 + pbColorOverZ.g*w1 + pcColorOverZ.g*w2) * ptOneOverZ;
                         ptColor.b = (paColorOverZ.b*w0 + pbColorOverZ.b*w1 + pcColorOverZ.b*w2) * ptOneOverZ;
+                        ptUV.x = (paUVOverZ.x*w0 + pbUVOverZ.x*w1 + pcUVOverZ.x*w2) * ptOneOverZ;
+                        ptUV.y = (paUVOverZ.y*w0 + pbUVOverZ.y*w1 + pcUVOverZ.y*w2) * ptOneOverZ;
 
-                        this.framebuffer32Bit[(y * this.screenWidth) + x] = ptColor.Get32Bit(w0);
+                        //this.framebuffer32Bit[(y * this.screenWidth) + x] = ptColor.Get32Bit(w0);
+                        this.framebuffer32Bit[(y * this.screenWidth) + x] = texWall.GetPixel(ptUV);
                     }
                 }
             }
@@ -111,11 +122,14 @@ class MGL
                                         this.PerspectiveProjection(pc),
                                         obj.colors[obj.indices[i]],
                                         obj.colors[obj.indices[i + 1]],
-                                        obj.colors[obj.indices[i + 2]]));
+                                        obj.colors[obj.indices[i + 2]],
+                                        obj.uvs[obj.indices[i]],
+                                        obj.uvs[obj.indices[i + 1]],
+                                        obj.uvs[obj.indices[i + 2]]));
         }
     }
 
-    SignedParallelogramArea(pa, pb, pc) 
+    SignedParallelogramArea2D(pa, pb, pc) 
     { 
         return (pc.x - pa.x)*(pb.y - pa.y) - (pc.y - pa.y)*(pb.x - pa.x); 
     }

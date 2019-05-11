@@ -36,6 +36,16 @@ class Cube
         this.colors.push(new Color(1.0, 1.0, 1.0));
         this.colors.push(new Color(0.5, 0.5, 0.5));
 
+        this.uvs = [];
+        this.uvs.push(new Vec3(0.0, 0.0));
+        this.uvs.push(new Vec3(1.0, 0.0));
+        this.uvs.push(new Vec3(0.0, 0.0));
+        this.uvs.push(new Vec3(1.0, 0.0));
+        this.uvs.push(new Vec3(0.0, 1.0));
+        this.uvs.push(new Vec3(1.0, 1.0));
+        this.uvs.push(new Vec3(0.0, 1.0));
+        this.uvs.push(new Vec3(1.0, 1.0));
+
         this.tm = new Matrix4x4(new Vec3(1, 0, 0),
                                 new Vec3(0, 1, 0),
                                 new Vec3(0, 0, 1),
