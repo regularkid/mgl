@@ -44,20 +44,23 @@ class MGL
             let yMax = Math.round(Math.max(poly.pa.y, Math.max(poly.pb.y, poly.pc.y)));
 
             let p = new Vec3(0, 0, 0);
-            let w0 = 0;
-            let w1 = 0;
-            let w2 = 0;
-            let r = 0;
-            let g = 0;
-            let b = 0;
+            let w0, w1, w2 = 0.0;
             let triArea2Reciprocal = 1.0 / this.SignedParallelogramArea(poly.pa, poly.pb, poly.pc);
+            let paColorOverZ = new Color(poly.paColor.r / poly.pa.z, poly.paColor.g / poly.pa.z, poly.paColor.b / poly.pa.z);
+            let pbColorOverZ = new Color(poly.pbColor.r / poly.pb.z, poly.pbColor.g / poly.pb.z, poly.pbColor.b / poly.pb.z);
+            let pcColorOverZ = new Color(poly.pcColor.r / poly.pc.z, poly.pcColor.g / poly.pc.z, poly.pcColor.b / poly.pc.z);
+            let ptColor = new Color(0.0, 0.0, 0.0);
+            let paOneOverZ = 1.0 / poly.pa.z;
+            let pbOneOverZ = 1.0 / poly.pb.z;
+            let pcOneOverZ = 1.0 / poly.pc.z;
+            let ptOneOverZ = 0.0;
+
             for (let y = yMin; y <= yMax; y++)
             {
                 for (let x = xMin; x <= xMax; x++)
                 {
                     p.x = x;
                     p.y = y;
-
 
                     w0 = this.SignedParallelogramArea(poly.pb, poly.pc, p);
                     w1 = this.SignedParallelogramArea(poly.pc, poly.pa, p);
@@ -70,9 +73,13 @@ class MGL
                         w1 *= triArea2Reciprocal;
                         w2 *= triArea2Reciprocal;
 
-                        this.framebuffer32Bit[(y * this.screenWidth) + x] = poly.paColor.Get32BitMultiplied(w0) +
-                                                                            poly.pbColor.Get32BitMultiplied(w1) +
-                                                                            poly.pcColor.Get32BitMultiplied(w2);
+                        // Perspective correct interpolation
+                        ptOneOverZ = 1.0 / (paOneOverZ*w0 + pbOneOverZ*w1 + pcOneOverZ*w2);
+                        ptColor.r = (paColorOverZ.r*w0 + pbColorOverZ.r*w1 + pcColorOverZ.r*w2) * ptOneOverZ;
+                        ptColor.g = (paColorOverZ.g*w0 + pbColorOverZ.g*w1 + pcColorOverZ.g*w2) * ptOneOverZ;
+                        ptColor.b = (paColorOverZ.b*w0 + pbColorOverZ.b*w1 + pcColorOverZ.b*w2) * ptOneOverZ;
+
+                        this.framebuffer32Bit[(y * this.screenWidth) + x] = ptColor.Get32Bit(w0);
                     }
                 }
             }
