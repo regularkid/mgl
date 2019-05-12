@@ -18,7 +18,6 @@ class Texture
     cachePixelColors()
     {
         this.pixels = new Array(this.image.width * this.image.height);
-        this.heightMap = new Array(this.image.width * this.image.height);
         for (let y = 0; y < this.image.height; y++)
         {
             for (let x = 0; x < this.image.width; x++)
@@ -27,8 +26,7 @@ class Texture
                 let r = color[0];
                 let g = color[1];
                 let b = color[2];
-                this.pixels[(y * this.image.width) + x] = ((b << 16) & 0xFFFF0000) | ((g << 8) & 0xFF00FF00) | (r & 0xFF0000FF);
-                this.heightMap[(y * this.image.width) + x] = color[0];
+                this.pixels[(y * this.image.width) + x] = 0xFF000000 | ((b << 16) & 0xFFFF0000) | ((g << 8) & 0xFF00FF00) | (r & 0xFF0000FF);
             }
         }
     }
@@ -42,7 +40,7 @@ class Texture
         {
             return 0xFFFF00FF;
         }
-        
+
         return this.pixels[(y * this.image.width) + x];
     }
 }
