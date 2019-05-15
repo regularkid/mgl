@@ -1,6 +1,6 @@
 class Cube
 {
-    constructor(center, halfSize)
+    constructor(center, halfSize, texture)
     {
         this.verts = [];
         this.verts.push(new Vec3(-halfSize, -halfSize, halfSize));
@@ -45,6 +45,8 @@ class Cube
         this.uvs.push(new Vec3(1.0, 1.0));
         this.uvs.push(new Vec3(0.0, 1.0));
         this.uvs.push(new Vec3(1.0, 1.0));
+
+        this.texture = texture;
 
         this.tm = new Matrix4x4(new Vec3(1, 0, 0),
                                 new Vec3(0, 1, 0),

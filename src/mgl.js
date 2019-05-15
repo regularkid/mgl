@@ -49,10 +49,10 @@ class MGL
             let triArea2Reciprocal = 1.0 / this.SignedParallelogramArea2D(poly.pa, poly.pb, poly.pc);
 
             // Values used to calculate perspective correct interpolation
-            let paColorOverZ = new Color(poly.paColor.r / poly.pa.z, poly.paColor.g / poly.pa.z, poly.paColor.b / poly.pa.z);
-            let pbColorOverZ = new Color(poly.pbColor.r / poly.pb.z, poly.pbColor.g / poly.pb.z, poly.pbColor.b / poly.pb.z);
-            let pcColorOverZ = new Color(poly.pcColor.r / poly.pc.z, poly.pcColor.g / poly.pc.z, poly.pcColor.b / poly.pc.z);
-            let ptColor = new Color(0.0, 0.0, 0.0);
+            // let paColorOverZ = new Color(poly.paColor.r / poly.pa.z, poly.paColor.g / poly.pa.z, poly.paColor.b / poly.pa.z);
+            // let pbColorOverZ = new Color(poly.pbColor.r / poly.pb.z, poly.pbColor.g / poly.pb.z, poly.pbColor.b / poly.pb.z);
+            // let pcColorOverZ = new Color(poly.pcColor.r / poly.pc.z, poly.pcColor.g / poly.pc.z, poly.pcColor.b / poly.pc.z);
+            // let ptColor = new Color(0.0, 0.0, 0.0);
             let paOneOverZ = 1.0 / poly.pa.z;
             let pbOneOverZ = 1.0 / poly.pb.z;
             let pcOneOverZ = 1.0 / poly.pc.z;
@@ -83,14 +83,18 @@ class MGL
 
                         // Perspective correct interpolation
                         ptOneOverZ = 1.0 / (paOneOverZ*w0 + pbOneOverZ*w1 + pcOneOverZ*w2);
-                        ptColor.r = (paColorOverZ.r*w0 + pbColorOverZ.r*w1 + pcColorOverZ.r*w2) * ptOneOverZ;
-                        ptColor.g = (paColorOverZ.g*w0 + pbColorOverZ.g*w1 + pcColorOverZ.g*w2) * ptOneOverZ;
-                        ptColor.b = (paColorOverZ.b*w0 + pbColorOverZ.b*w1 + pcColorOverZ.b*w2) * ptOneOverZ;
+
+                        // Color
+                        // ptColor.r = (paColorOverZ.r*w0 + pbColorOverZ.r*w1 + pcColorOverZ.r*w2) * ptOneOverZ;
+                        // ptColor.g = (paColorOverZ.g*w0 + pbColorOverZ.g*w1 + pcColorOverZ.g*w2) * ptOneOverZ;
+                        // ptColor.b = (paColorOverZ.b*w0 + pbColorOverZ.b*w1 + pcColorOverZ.b*w2) * ptOneOverZ;
+
+                        // Texture
                         ptUV.x = (paUVOverZ.x*w0 + pbUVOverZ.x*w1 + pcUVOverZ.x*w2) * ptOneOverZ;
                         ptUV.y = (paUVOverZ.y*w0 + pbUVOverZ.y*w1 + pcUVOverZ.y*w2) * ptOneOverZ;
 
                         //this.framebuffer32Bit[(y * this.screenWidth) + x] = ptColor.Get32Bit(w0);
-                        this.framebuffer32Bit[(y * this.screenWidth) + x] = texWall.GetPixel(ptUV);
+                        this.framebuffer32Bit[(y * this.screenWidth) + x] = poly.texture.GetPixel(ptUV);
                     }
                 }
             }
@@ -125,7 +129,8 @@ class MGL
                                         obj.colors[obj.indices[i + 2]],
                                         obj.uvs[obj.indices[i]],
                                         obj.uvs[obj.indices[i + 1]],
-                                        obj.uvs[obj.indices[i + 2]]));
+                                        obj.uvs[obj.indices[i + 2]],
+                                        obj.texture));
         }
     }
 

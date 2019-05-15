@@ -1,6 +1,6 @@
 class Polygon
 {
-    constructor(pa, pb, pc, paColor, pbColor, pcColor, paUV, pbUV, pcUV)
+    constructor(pa, pb, pc, paColor, pbColor, pcColor, paUV, pbUV, pcUV, texture)
     {
         this.pa = pa;
         this.pb = pb;
@@ -11,6 +11,7 @@ class Polygon
         this.paUV = paUV;
         this.pbUV = pbUV;
         this.pcUV = pcUV;
+        this.texture = texture;
 
         this.zAvg = (pa.z + pb.z + pc.z) * 0.3333;
     }
