@@ -69,7 +69,18 @@ class MGL
             let ptUV = new Vec3(0.0, 0.0, 0.0);
 
             // Values used for lighting
-            let diffuseMultiplier = Math.max(-this.lights[0].dir.Dot(poly.normal), 0.0);
+            let lightColor = new Color(0, 0, 0);
+            let lightIntensity = 0.0;
+            this.lights.forEach(light =>
+            {
+                let intensity = Math.max(Math.min(-light.dir.Dot(poly.normal), 1.0), 0.0);
+                lightIntensity += intensity + light.ambient;
+
+                let lightDiffuse = light.diffuse;
+                lightColor.r += lightDiffuse.r * intensity;
+                lightColor.g += lightDiffuse.g * intensity;
+                lightColor.b += lightDiffuse.b * intensity;
+            });
 
             for (let y = yMin; y <= yMax; y++)
             {
@@ -103,9 +114,9 @@ class MGL
                         ptUV.x = (paUVOverZ.x*w0 + pbUVOverZ.x*w1 + pcUVOverZ.x*w2) * ptOneOverZ;
                         ptUV.y = (paUVOverZ.y*w0 + pbUVOverZ.y*w1 + pcUVOverZ.y*w2) * ptOneOverZ;
                         colorTex = poly.texture.GetPixelRGB(ptUV);
-                        color.r = colorTex.r * diffuseMultiplier;
-                        color.g = colorTex.g * diffuseMultiplier;
-                        color.b = colorTex.b * diffuseMultiplier;
+                        color.r = (colorTex.r * lightIntensity) + lightColor.r;
+                        color.g = (colorTex.g * lightIntensity) + lightColor.g;
+                        color.b = (colorTex.b * lightIntensity) + lightColor.b;
                         this.framebuffer32Bit[(y * this.screenWidth) + x] = color.Get32Bit();
                     }
                 }

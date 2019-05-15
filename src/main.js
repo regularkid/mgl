@@ -4,7 +4,10 @@ let lastTime = 0;
 let mgl = new MGL(canvas, ctx, 800/600);
 let texWall = new Texture("./textures/wall.png");
 let cube = new Cube(new Vec3(0, 0, -5.0), 1.0, texWall);
-mgl.lights.push(new Light(new Vec3(0.0, 0.0, -1.0)));
+mgl.lights.push(new Light(new Vec3(1.0, 0.0, 0.0), 0.4, new Color(0.5, 0.5, 0.5)));
+//mgl.lights.push(new Light(new Vec3(0.0, 0.0, -1.0), 0.1, new Color(0.5, 0.0, 0.0)));
+//mgl.lights.push(new Light(new Vec3(1.0, 0.0, 0.0), 0.1, new Color(0.0, 0.75, 0.0)));
+//mgl.lights.push(new Light(new Vec3(0.0, 1.0, 0.0), 0.1, new Color(0.0, 0.0, 1.0)));
 
 function GameLoop(curTime)
 {
