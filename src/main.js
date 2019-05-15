@@ -4,10 +4,7 @@ let lastTime = 0;
 let mgl = new MGL(canvas, ctx, 800/600);
 let texWall = new Texture("./textures/wall.png");
 let cube = new Cube(new Vec3(0, 0, -5.0), 1.0, texWall);
-mgl.lights.push(new Light(new Vec3(1.0, 0.0, 0.0), 0.4, new Color(0.5, 0.5, 0.5)));
-//mgl.lights.push(new Light(new Vec3(0.0, 0.0, -1.0), 0.1, new Color(0.5, 0.0, 0.0)));
-//mgl.lights.push(new Light(new Vec3(1.0, 0.0, 0.0), 0.1, new Color(0.0, 0.75, 0.0)));
-//mgl.lights.push(new Light(new Vec3(0.0, 1.0, 0.0), 0.1, new Color(0.0, 0.0, 1.0)));
+mgl.lights.push(new Light(new Vec3(1.0, 0.0, 0.0), 0.4, 2.0));
 
 function GameLoop(curTime)
 {
@@ -17,7 +14,7 @@ function GameLoop(curTime)
     mgl.ClearBuffers();
 
     // DEBUG
-    let rotateAngle = (180.0 * (Math.PI / 180.0)) * dt;
+    let rotateAngle = (90.0 * (Math.PI / 180.0)) * dt;
     let cosAngle = Math.cos(rotateAngle);
     let sinAngle = Math.sin(rotateAngle);
     let tmRotate = new Matrix4x4(new Vec3(cosAngle, 0.0, sinAngle),
@@ -25,7 +22,7 @@ function GameLoop(curTime)
                                  new Vec3(-sinAngle, 0.0, cosAngle),
                                  new Vec3(0.0, 0.0, 0.0));
 
-    rotateAngle = (90.0 * (Math.PI / 180.0)) * dt;
+    rotateAngle = (45.0 * (Math.PI / 180.0)) * dt;
     cosAngle = Math.cos(rotateAngle);
     sinAngle = Math.sin(rotateAngle);
     let tmRotate2 = new Matrix4x4(new Vec3(1.0, 0.0, 0.0),
