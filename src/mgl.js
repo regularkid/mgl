@@ -23,9 +23,10 @@ class MGL
 
     PerspectiveProjection(p)
     {
-        return new Vec3(((p.x / p.z) * this.screenHalfWidthOverAspectRatio) + this.screenHalfWidth,
-                        -((p.y / p.z) * this.screenHalfHeight) + this.screenHalfHeight,
-                        p.z);
+        let zAbs = Math.abs(p.z);
+        return new Vec3(this.screenHalfWidth + ((p.x / zAbs) * this.screenHalfWidthOverAspectRatio),
+                        this.screenHalfHeight - ((p.y / zAbs) * this.screenHalfHeight),
+                        zAbs);
     }
 
     ClearBuffers()
@@ -72,7 +73,7 @@ class MGL
             let lightIntensity = 0.0;
             this.lights.forEach(light =>
             {
-                let intensity = Math.max(Math.min(-light.dir.Dot(poly.normal), 1.0), 0.0);
+                let intensity = Math.max(Math.min(light.dirInv.Dot(poly.normal), 1.0), 0.0);
                 lightIntensity += intensity*light.diffuse + light.ambient;
             });
 
