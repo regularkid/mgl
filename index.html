@@ -21,6 +21,59 @@
             image-rendering: pixelated;
             image-rendering: crisp-edges;
         }
+
+        .slidecontainer {
+            width: 100%;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 700px;
+            height: 25px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+        }
+
+        .slider:hover {
+            opacity: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 45px;
+            height: 45px;
+            background: #0270FF;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 45px;
+            height: 45px;
+            background: #0270FF;
+            cursor: pointer;
+        }
+
+        .button {
+            background-color: #0270FF;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 24px;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+        }
+
+        .button:hover {
+            opacity: 1;
+        }
         </style>
         <title>Super Micro Fun - Micro GL</title>
     </head>
@@ -33,6 +86,9 @@
                 <h4>Apr. --, 2019</h4>
                 <div id="game"></div>
                 <canvas id="canvas" width="200" height="150" style="width:800px; height:600px; background-color:black"></canvas>
+                <br/><br/>
+
+                <button class="button" onclick="ToggleLightColors()">Toggle Light Colors</button>
                 <br/><br/>
 
                 <script src="src/vec3.js"></script>

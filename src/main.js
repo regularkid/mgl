@@ -5,8 +5,9 @@ let mgl = new MGL(canvas, ctx, 800/600);
 let texWall = new Texture("./textures/wall.png");
 let cube = new Cube(new Vec3(0, 0.1, -5.0), 1.0, texWall);
 //mgl.lights.push(new Light(new Vec3(0.0, 0.0, -1.0), new Color(0.4, 0.4, 0.4), new Color(10.0, 0.4, 0.4)));
-mgl.lights.push(new Light(new Vec3(-1.0, 0.0, 0.0), new Color(0.3, 1.0, 0.3), new Color(0.4, 10.0, 0.4)));
-mgl.lights.push(new Light(new Vec3(1.0, 0.0, 0.0), new Color(0.4, 0.4, 1.0), new Color(0.4, 0.4, 10.0)));
+mgl.lights.push(new Light(new Vec3(-1.0, 0.0, 0.0), new Color(0.3, 0.3, 0.3), new Color(1.0, 1.0, 1.0)));
+mgl.lights.push(new Light(new Vec3(0.0, -1.0, 0.0), new Color(0.3, 0.3, 0.3), new Color(1.0, 1.0, 1.0)));
+let lightColorsOn = false;
 
 function GameLoop(curTime)
 {
@@ -50,3 +51,24 @@ function GameLoop(curTime)
 }
 
 window.requestAnimationFrame(GameLoop);
+
+function ToggleLightColors()
+{
+    lightColorsOn = !lightColorsOn;
+    if (lightColorsOn)
+    {
+        mgl.lights[0].ambient = new Color(0.3, 1.0, 0.3);
+        mgl.lights[0].diffuse = new Color(0.4, 10.0, 0.4);
+
+        mgl.lights[1].ambient = new Color(0.4, 0.4, 1.0);
+        mgl.lights[1].diffuse = new Color(0.4, 0.4, 10.0);
+    }
+    else
+    {
+        mgl.lights[0].ambient = new Color(0.3, 0.3, 0.3);
+        mgl.lights[0].diffuse = new Color(1.0, 1.0, 1.0);
+
+        mgl.lights[1].ambient = new Color(0.3, 0.3, 0.3);
+        mgl.lights[1].diffuse = new Color(1.0, 1.0, 1.0);
+    }
+}
