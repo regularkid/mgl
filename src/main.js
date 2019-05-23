@@ -1,20 +1,42 @@
 let canvas = document.getElementById("canvas");
 let ctx = canvas.getContext("2d", { alpha: false });
+let input = new Input(canvas);
 let lastTime = 0;
 let mgl = new MGL(canvas, ctx, 800/600);
 let texWall = new Texture("./textures/wall.png");
 let cube = new Cube(new Vec3(0, 0.1, -5.0), 1.0, texWall);
-//mgl.lights.push(new Light(new Vec3(0.0, 0.0, -1.0), new Color(0.4, 0.4, 0.4), new Color(10.0, 0.4, 0.4)));
 mgl.lights.push(new Light(new Vec3(-1.0, 0.0, 0.0), new Color(0.3, 0.3, 0.3), new Color(1.0, 1.0, 1.0)));
 mgl.lights.push(new Light(new Vec3(0.0, -1.0, 0.0), new Color(0.3, 0.3, 0.3), new Color(1.0, 1.0, 1.0)));
 let lightColorsOn = false;
+
+let cameraPos = new Vec3(0, 0, 0);
+let cameraTarget = new Vec3(0, 0, -5);
+let cameraUp = new Vec3(0, 1, 0);
+let cameraAngleH = 0.0;
+let cameraAngleV = 30.0;
+let cameraDistance = 5.0;
+let cameraMoveSpeed = 0.5;
+let cameraMaxAngleV = 60.0;
 
 function GameLoop(curTime)
 {
     let dt = Math.min((curTime - lastTime) / 1000.0, 0.2);	
     lastTime = curTime;
 
-    mgl.ClearBuffers();
+    if (input.isTouchActive)
+    {
+        cameraAngleH += input.dx * cameraMoveSpeed;
+        cameraAngleV = Math.max(Math.min(cameraAngleV + input.dy * cameraMoveSpeed, cameraMaxAngleV), -cameraMaxAngleV);
+    }
+
+    let cameraDistanceH = Math.cos(cameraAngleV*Math.PI/180.0) * cameraDistance;
+    let cameraOffset = new Vec3(Math.cos(cameraAngleH*Math.PI/180.0) * cameraDistanceH,
+                                Math.sin(cameraAngleV*Math.PI/180.0) * cameraDistance,
+                                Math.sin(cameraAngleH*Math.PI/180.0) * cameraDistanceH);
+
+    cameraPos = cameraTarget.Add(cameraOffset);
+
+    mgl.SetCameraLookAt(cameraPos, cameraTarget, cameraUp);
 
     // DEBUG
     let rotateAngle = (90.0 * (Math.PI / 180.0)) * dt;
@@ -33,12 +55,12 @@ function GameLoop(curTime)
                                  new Vec3(0.0, -sinAngle, cosAngle),
                                  new Vec3(0.0, 0.0, 0.0));
 
-    tmRotate.MultiplyMatrix4x4Self(tmRotate2);
+    //tmRotate.MultiplyMatrix4x4Self(tmRotate2);
 
-    cube.tm = cube.tm.MultiplyMatrix4x4(tmRotate);
+    //cube.tm = cube.tm.MultiplyMatrix4x4(tmRotate);
 
+    mgl.ClearBuffers();
     mgl.RenderObject(cube, "#F00");
-
     mgl.RenderBuffers();
 
     //TEMP!	
@@ -47,6 +69,7 @@ function GameLoop(curTime)
     let fps = 1.0 / dt;
     ctx.fillText(`${Math.floor(fps)}`, 10, 20);
 
+    input.PostUpdate();
     window.requestAnimationFrame(GameLoop);
 }
 

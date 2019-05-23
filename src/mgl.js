@@ -16,7 +16,9 @@ class MGL
         this.viewPlaneHalfWidth = aspectRatio;
         this.viewPlaneHalfHeight = 1.0;
 
-        this.viewDir = new Vec3(0, 0, -1);
+        this.cameraPos = new Vec3(0, 0, 0);
+        this.cameraDir = new Vec3(0, 0, -1);
+        this.viewMatrix = new Matrix4x4(new Vec3(1, 0, 0), new Vec3(0, 1, 0), new Vec3(0, 0, 1), new Vec3(0, 0, 0));
 
         this.lights = [];
     }
@@ -131,22 +133,30 @@ class MGL
     {
         for (let i = 0; i < obj.indices.length; i += 3)
         {
+            // Local -> World
             let paWorld = obj.tm.TransformPoint(obj.verts[obj.indices[i]]);
             let pbWorld = obj.tm.TransformPoint(obj.verts[obj.indices[i + 1]]);
             let pcWorld = obj.tm.TransformPoint(obj.verts[obj.indices[i + 2]]);
+
+            // World -> Camera
+            paWorld = this.viewMatrix.TransformPoint(paWorld);
+            pbWorld = this.viewMatrix.TransformPoint(pbWorld);
+            pcWorld = this.viewMatrix.TransformPoint(pcWorld);
 
             // Cull backfaces
             let pabWorld = pbWorld.Sub(paWorld);
             let pbcWorld = pcWorld.Sub(pbWorld);
             let normal = pabWorld.Cross(pbcWorld);
-            let dot = normal.Dot(this.viewDir);
-            if (dot >= 0)
+            if (normal.Dot(paWorld) >= 0 &&
+                normal.Dot(pbWorld) >= 0 &&
+                normal.Dot(pcWorld) >= 0)
             {
                 continue;
             }
 
             normal.NormalizeSelf();
 
+            // Camera -> Screen
             this.polys.push(new Polygon(paWorld, pbWorld, pcWorld,
                                         this.PerspectiveProjection(paWorld),
                                         this.PerspectiveProjection(pbWorld),
@@ -165,5 +175,22 @@ class MGL
     SignedParallelogramArea2D(pa, pb, pc) 
     { 
         return (pc.x - pa.x)*(pb.y - pa.y) - (pc.y - pa.y)*(pb.x - pa.x); 
+    }
+
+    SetCameraLookAt(pos, target, up)
+    {
+        let zAxis = pos.Sub(target).Normalize();
+        let xAxis = up.Cross(zAxis).Normalize();
+        let yAxis = zAxis.Cross(xAxis).Normalize();
+
+        this.cameraPos = pos;
+        this.cameraDir = zAxis.Invert();
+
+        this.viewMatrix.c0 = new Vec3(xAxis.x, yAxis.x, zAxis.x);
+        this.viewMatrix.c1 = new Vec3(xAxis.y, yAxis.y, zAxis.y);
+        this.viewMatrix.c2 = new Vec3(xAxis.z, yAxis.z, zAxis.z);
+        this.viewMatrix.c3 = new Vec3(-pos.Dot(xAxis), -pos.Dot(yAxis), -pos.Dot(zAxis));
+
+        //this.viewMatrix.c3 = new Vec3(-pos.x, -pos.y, -pos.z);
     }
 }
