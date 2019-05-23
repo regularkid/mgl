@@ -67,9 +67,9 @@ function GameLoop(curTime)
                                  new Vec3(0.0, -sinAngle, cosAngle),
                                  new Vec3(0.0, 0.0, 0.0));
 
-    //tmRotate.MultiplyMatrix4x4Self(tmRotate2);
+    tmRotate.MultiplyMatrix4x4Self(tmRotate2);
 
-    //cube.tm = cube.tm.MultiplyMatrix4x4(tmRotate);
+    cube.tm = cube.tm.MultiplyMatrix4x4(tmRotate);
 
     mgl.ClearBuffers();
     mgl.RenderObject(cube, "#F00");
