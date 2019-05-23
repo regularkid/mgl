@@ -41,7 +41,7 @@ class MGL
 
     RenderBuffers()
     {
-        this.polys.sort((a, b) => a.zAvg - b.zAvg);
+        this.polys.sort((a, b) => b.zAvg - a.zAvg);
 
         for (let i = 0; i < this.polys.length; i++)
         {
@@ -161,9 +161,7 @@ class MGL
             let pabWorld = pbWorld.Sub(paWorld);
             let pbcWorld = pcWorld.Sub(pbWorld);
             let normal = pabWorld.Cross(pbcWorld);
-            if (normal.Dot(paWorld) >= 0 &&
-                normal.Dot(pbWorld) >= 0 &&
-                normal.Dot(pcWorld) >= 0)
+            if (normal.Dot(paWorld) >= 0)
             {
                 continue;
             }
