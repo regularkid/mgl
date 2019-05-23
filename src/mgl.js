@@ -79,7 +79,9 @@ class MGL
                 lightColor.g += light.ambient.g;
                 lightColor.b += light.ambient.b;
 
-                let intensity = Math.max(Math.min(light.dirInv.Dot(poly.normal), 1.0), 0.0);
+                let lightDirInv = this.viewMatrix.TransformDirection(light.dirInv);
+
+                let intensity = Math.max(Math.min(lightDirInv.Dot(poly.normal), 1.0), 0.0);
                 lightColor.r += intensity*light.diffuse.r;
                 lightColor.g += intensity*light.diffuse.g;
                 lightColor.b += intensity*light.diffuse.b;
@@ -190,7 +192,5 @@ class MGL
         this.viewMatrix.c1 = new Vec3(xAxis.y, yAxis.y, zAxis.y);
         this.viewMatrix.c2 = new Vec3(xAxis.z, yAxis.z, zAxis.z);
         this.viewMatrix.c3 = new Vec3(-pos.Dot(xAxis), -pos.Dot(yAxis), -pos.Dot(zAxis));
-
-        //this.viewMatrix.c3 = new Vec3(-pos.x, -pos.y, -pos.z);
     }
 }
