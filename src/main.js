@@ -5,6 +5,7 @@ let lastTime = 0;
 let mgl = new MGL(canvas, ctx, 800/600);
 let texWall = new Texture("./textures/wall.png");
 let cube = new Cube(new Vec3(0, 0.1, -5.0), 1.0, texWall);
+let cube2 = new Cube(new Vec3(0.5, 0.1, -6.0), 1.0, texWall);
 mgl.lights.push(new Light(new Vec3(-1.0, 0.0, 0.0), new Color(0.3, 0.3, 0.3), new Color(1.0, 1.0, 1.0)));
 mgl.lights.push(new Light(new Vec3(0.0, -1.0, 0.0), new Color(0.3, 0.3, 0.3), new Color(1.0, 1.0, 1.0)));
 let lightColorsOn = false;
@@ -72,6 +73,7 @@ function GameLoop(curTime)
 
     mgl.ClearBuffers();
     mgl.RenderObject(cube, "#F00");
+    mgl.RenderObject(cube2, "#F00");
     mgl.RenderBuffers();
 
     //TEMP!	
