@@ -45,10 +45,10 @@ class MGL
         {
             let poly = this.polys[i];
 
-            let xMin = Math.round(Math.min(poly.paScreen.x, Math.min(poly.pbScreen.x, poly.pcScreen.x)));
-            let xMax = Math.round(Math.max(poly.paScreen.x, Math.max(poly.pbScreen.x, poly.pcScreen.x)));
-            let yMin = Math.round(Math.min(poly.paScreen.y, Math.min(poly.pbScreen.y, poly.pcScreen.y)));
-            let yMax = Math.round(Math.max(poly.paScreen.y, Math.max(poly.pbScreen.y, poly.pcScreen.y)));
+            let xMin = Math.max(Math.round(Math.min(poly.paScreen.x, Math.min(poly.pbScreen.x, poly.pcScreen.x))), 0.0);
+            let xMax = Math.min(Math.round(Math.max(poly.paScreen.x, Math.max(poly.pbScreen.x, poly.pcScreen.x))), this.screenWidth - 1);
+            let yMin = Math.max(Math.round(Math.min(poly.paScreen.y, Math.min(poly.pbScreen.y, poly.pcScreen.y))), 0.0);
+            let yMax = Math.min(Math.round(Math.max(poly.paScreen.y, Math.max(poly.pbScreen.y, poly.pcScreen.y))), this.screenHeight - 1);
             let p = new Vec3(0, 0, 0);
             let color = new Color(0, 0, 0);
             let colorTex = new Color(0, 0, 0);
