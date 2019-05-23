@@ -8,12 +8,13 @@ class Input
         this.dx = 0;
         this.dy = 0;
         this.isTouchActive = false;
+        this.buttonIdx = 0;
         this.isNewTouch = false;
 
-        canvas.addEventListener("mousedown", e => { this.isTouchActive = true; this.isNewTouch = true; }, true);
+        canvas.addEventListener("mousedown", e => { this.isTouchActive = true; this.isNewTouch = true; this.buttonIdx = e.button; }, true);
         canvas.addEventListener("mouseup", e => { this.isTouchActive = false }, true);
         canvas.addEventListener("mousemove", e => { this.SetInputPos(e); e.preventDefault(); }, true );
-        canvas.addEventListener("touchstart", e => { this.SetInputPos(e.touches[0]); this.isTouchActive = true; this.isNewTouch = true; e.preventDefault(); }, true );
+        canvas.addEventListener("touchstart", e => { this.SetInputPos(e.touches[0]); this.isTouchActive = true; this.isNewTouch = true; this.buttonIdx = 0; e.preventDefault(); }, true );
         canvas.addEventListener("touchend", e => { this.isTouchActive = false; e.preventDefault(); }, true );
         canvas.addEventListener("touchcancel", e => { this.isTouchActive = false; e.preventDefault(); }, true );
         canvas.addEventListener("touchmove", e => { this.SetInputPos(e.touches[0]); e.preventDefault(); }, true );

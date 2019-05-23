@@ -15,7 +15,8 @@ let cameraUp = new Vec3(0, 1, 0);
 let cameraAngleH = 0.0;
 let cameraAngleV = 30.0;
 let cameraDistance = 5.0;
-let cameraMoveSpeed = 0.5;
+let cameraRotateSpeed = 0.5;
+let cameraPanSpeed = 0.1;
 let cameraMaxAngleV = 60.0;
 
 function GameLoop(curTime)
@@ -25,8 +26,18 @@ function GameLoop(curTime)
 
     if (input.isTouchActive)
     {
-        cameraAngleH += input.dx * cameraMoveSpeed;
-        cameraAngleV = Math.max(Math.min(cameraAngleV + input.dy * cameraMoveSpeed, cameraMaxAngleV), -cameraMaxAngleV);
+        if (input.buttonIdx === 0)
+        {
+            cameraAngleH += input.dx * cameraRotateSpeed;
+            cameraAngleV = Math.max(Math.min(cameraAngleV + input.dy * cameraRotateSpeed, cameraMaxAngleV), -cameraMaxAngleV);
+        }
+        else if (input.buttonIdx === 1)
+        {
+            let cameraRight = mgl.cameraDir.Cross(cameraUp);
+            let cameraUpNew = cameraRight.Cross(mgl.cameraDir);
+            cameraTarget.AddToSelf(cameraRight.Scale(-input.dx * cameraPanSpeed));
+            cameraTarget.AddToSelf(cameraUpNew.Scale(input.dy * cameraPanSpeed));
+        }
     }
 
     let cameraDistanceH = Math.cos(cameraAngleV*Math.PI/180.0) * cameraDistance;
