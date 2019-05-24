@@ -1,6 +1,6 @@
 class Polygon
 {
-    constructor(paWorld, pbWorld, pcWorld, paScreen, pbScreen, pcScreen, paColor, pbColor, pcColor, paUV, pbUV, pcUV, normal, texture)
+    constructor(paWorld, pbWorld, pcWorld, paScreen, pbScreen, pcScreen, paUV, pbUV, pcUV, normal, texture)
     {
         this.paWorld = paWorld;
         this.pbWorld = pbWorld;
@@ -8,9 +8,6 @@ class Polygon
         this.paScreen = paScreen;
         this.pbScreen = pbScreen;
         this.pcScreen = pcScreen;
-        this.paColor = paColor;
-        this.pbColor = pbColor;
-        this.pcColor = pcColor;
         this.paUV = paUV;
         this.pbUV = pbUV;
         this.pcUV = pcUV;

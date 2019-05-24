@@ -26,16 +26,6 @@ class Cube
         this.indices.push(3); this.indices.push(2); this.indices.push(0);
         this.indices.push(2); this.indices.push(1); this.indices.push(0);
 
-        this.colors = [];
-        this.colors.push(new Color(1.0, 0.0, 0.0));
-        this.colors.push(new Color(0.0, 1.0, 0.0));
-        this.colors.push(new Color(0.0, 0.0, 1.0));
-        this.colors.push(new Color(1.0, 1.0, 0.0));
-        this.colors.push(new Color(1.0, 0.0, 1.0));
-        this.colors.push(new Color(0.0, 1.0, 1.0));
-        this.colors.push(new Color(1.0, 1.0, 1.0));
-        this.colors.push(new Color(0.5, 0.5, 0.5));
-
         this.uvs = [];
         this.uvs.push(new Vec3(0.0, 0.0));
         this.uvs.push(new Vec3(1.0, 0.0));

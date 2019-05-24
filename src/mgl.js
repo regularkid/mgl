@@ -35,7 +35,7 @@ class MGL
     ClearBuffers()
     {
         this.framebuffer32Bit.fill(0xFF000000);
-        this.zBuffer.fill(10);//Number.MAX_SAFE_INTEGER);
+        this.zBuffer.fill(Number.MAX_SAFE_INTEGER);
         this.polys = [];
     }
 
@@ -60,10 +60,6 @@ class MGL
             let triArea2Reciprocal = 1.0 / this.SignedParallelogramArea2D(poly.paScreen, poly.pbScreen, poly.pcScreen);
 
             // Values used to calculate perspective correct interpolation
-            // let paColorOverZ = new Color(poly.paColor.r / poly.paScreen.z, poly.paColor.g / poly.paScreen.z, poly.paColor.b / poly.paScreen.z);
-            // let pbColorOverZ = new Color(poly.pbColor.r / poly.pbScreen.z, poly.pbColor.g / poly.pbScreen.z, poly.pbColor.b / poly.pbScreen.z);
-            // let pcColorOverZ = new Color(poly.pcColor.r / poly.pcScreen.z, poly.pcColor.g / poly.pcScreen.z, poly.pcColor.b / poly.pcScreen.z);
-            // let ptColor = new Color(0.0, 0.0, 0.0);
             let paOneOverZ = 1.0 / poly.paScreen.z;
             let pbOneOverZ = 1.0 / poly.pbScreen.z;
             let pcOneOverZ = 1.0 / poly.pcScreen.z;
@@ -118,12 +114,6 @@ class MGL
                         {
                             this.zBuffer[bufferIdx] = ptZ;
 
-                            // Color
-                            // ptColor.r = (paColorOverZ.r*w0 + pbColorOverZ.r*w1 + pcColorOverZ.r*w2) * ptZ;
-                            // ptColor.g = (paColorOverZ.g*w0 + pbColorOverZ.g*w1 + pcColorOverZ.g*w2) * ptZ;
-                            // ptColor.b = (paColorOverZ.b*w0 + pbColorOverZ.b*w1 + pcColorOverZ.b*w2) * ptZ;
-                            //this.framebuffer32Bit[(y * this.screenWidth) + x] = ptColor.Get32Bit(w0);
-
                             // Texture
                             ptUV.x = (paUVOverZ.x*w0 + pbUVOverZ.x*w1 + pcUVOverZ.x*w2) * ptZ;
                             ptUV.y = (paUVOverZ.y*w0 + pbUVOverZ.y*w1 + pcUVOverZ.y*w2) * ptZ;
@@ -173,9 +163,6 @@ class MGL
                                         this.PerspectiveProjection(paWorld),
                                         this.PerspectiveProjection(pbWorld),
                                         this.PerspectiveProjection(pcWorld),
-                                        obj.colors[obj.indices[i]],
-                                        obj.colors[obj.indices[i + 1]],
-                                        obj.colors[obj.indices[i + 2]],
                                         obj.uvs[obj.indices[i]],
                                         obj.uvs[obj.indices[i + 1]],
                                         obj.uvs[obj.indices[i + 2]],

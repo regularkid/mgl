@@ -4,20 +4,30 @@ let input = new Input(canvas);
 let lastTime = 0;
 let mgl = new MGL(canvas, ctx, 800/600);
 let texWall = new Texture("./textures/wall.png");
-let cube = new Cube(new Vec3(0, 0.1, -5.0), 1.0, texWall);
-let cube2 = new Cube(new Vec3(0.5, 0.1, -6.0), 1.0, texWall);
+let texStone = new Texture("./textures/stone.png");
+let cube = new Cube(new Vec3(0, 1.0, 0.0), 1.0, texWall);
+let cube2 = new Cube(new Vec3(0.5, 1.0, -1.0), 1.0, texWall);
+let groundPlaneHW = 5.0;
+let groundPlane = new Plane(new Vec3(-groundPlaneHW, 0.0, groundPlaneHW),
+                            new Vec3(groundPlaneHW, 0.0, groundPlaneHW),
+                            new Vec3(groundPlaneHW, 0.0, -groundPlaneHW),
+                            new Vec3(-groundPlaneHW, 0.0, -groundPlaneHW),
+                            texStone);
 mgl.lights.push(new Light(new Vec3(-1.0, 0.0, 0.0), new Color(0.3, 0.3, 0.3), new Color(1.0, 1.0, 1.0)));
 mgl.lights.push(new Light(new Vec3(0.0, -1.0, 0.0), new Color(0.3, 0.3, 0.3), new Color(1.0, 1.0, 1.0)));
 let lightColorsOn = false;
 
 let cameraPos = new Vec3(0, 0, 0);
-let cameraTarget = new Vec3(0, 0, -5);
+let cameraTarget = new Vec3(0, 0, 0);
 let cameraUp = new Vec3(0, 1, 0);
 let cameraAngleH = 0.0;
 let cameraAngleV = 30.0;
-let cameraDistance = 5.0;
+let cameraDistance = 9.0;
+let cameraMinDistance = 5.0;
+let cameraMaxDistance = 15.0;
 let cameraRotateSpeed = 0.5;
 let cameraPanSpeed = 0.1;
+let cameraMinAngleV = -60.0;
 let cameraMaxAngleV = 60.0;
 
 function GameLoop(curTime)
@@ -27,19 +37,11 @@ function GameLoop(curTime)
 
     if (input.isTouchActive)
     {
-        if (input.buttonIdx === 0)
-        {
-            cameraAngleH += input.dx * cameraRotateSpeed;
-            cameraAngleV = Math.max(Math.min(cameraAngleV + input.dy * cameraRotateSpeed, cameraMaxAngleV), -cameraMaxAngleV);
-        }
-        else if (input.buttonIdx === 1)
-        {
-            let cameraRight = mgl.cameraDir.Cross(cameraUp);
-            let cameraUpNew = cameraRight.Cross(mgl.cameraDir);
-            cameraTarget.AddToSelf(cameraRight.Scale(-input.dx * cameraPanSpeed));
-            cameraTarget.AddToSelf(cameraUpNew.Scale(input.dy * cameraPanSpeed));
-        }
+        cameraAngleH += input.dx * cameraRotateSpeed;
+        cameraAngleV = Math.max(Math.min(cameraAngleV + input.dy * cameraRotateSpeed, cameraMaxAngleV), cameraMinAngleV);
     }
+    
+    cameraDistance = Math.max(Math.min(cameraDistance + input.wheel*0.01, cameraMaxDistance), cameraMinDistance);
 
     let cameraDistanceH = Math.cos(cameraAngleV*Math.PI/180.0) * cameraDistance;
     let cameraOffset = new Vec3(Math.cos(cameraAngleH*Math.PI/180.0) * cameraDistanceH,
@@ -72,6 +74,7 @@ function GameLoop(curTime)
     cube.tm = cube.tm.MultiplyMatrix4x4(tmRotate);
 
     mgl.ClearBuffers();
+    mgl.RenderObject(groundPlane, "#F00");
     mgl.RenderObject(cube, "#F00");
     mgl.RenderObject(cube2, "#F00");
     mgl.RenderBuffers();
