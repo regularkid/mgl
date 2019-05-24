@@ -20,14 +20,14 @@ let lightColorsOn = false;
 let cameraPos = new Vec3(0, 0, 0);
 let cameraTarget = new Vec3(0, 0, 0);
 let cameraUp = new Vec3(0, 1, 0);
-let cameraAngleH = 0.0;
-let cameraAngleV = 30.0;
+let cameraAngleH = 300.0;
+let cameraAngleV = 20.0;
 let cameraDistance = 9.0;
-let cameraMinDistance = 5.0;
-let cameraMaxDistance = 15.0;
+let cameraMinDistance = 15.0;
+let cameraMaxDistance = 50.0;
 let cameraRotateSpeed = 0.5;
 let cameraPanSpeed = 0.1;
-let cameraMinAngleV = -60.0;
+let cameraMinAngleV = 5.0;
 let cameraMaxAngleV = 60.0;
 
 function GameLoop(curTime)

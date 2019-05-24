@@ -26,10 +26,10 @@ class MGL
 
     PerspectiveProjection(p)
     {
-        let zAbs = Math.abs(p.z);
-        return new Vec3(this.screenHalfWidth + ((p.x / zAbs) * this.screenHalfWidthOverAspectRatio),
-                        this.screenHalfHeight - ((p.y / zAbs) * this.screenHalfHeight),
-                        zAbs);
+        let scale = 3.5;
+        return new Vec3(this.screenHalfWidth + (((p.x*scale) / -p.z) * this.screenHalfWidthOverAspectRatio),
+                        this.screenHalfHeight - (((p.y*scale) / -p.z) * this.screenHalfHeight),
+                        -p.z);
     }
 
     ClearBuffers()
@@ -100,7 +100,7 @@ class MGL
                     w1 = this.SignedParallelogramArea2D(poly.pcScreen, poly.paScreen, p);
                     w2 = this.SignedParallelogramArea2D(poly.paScreen, poly.pbScreen, p);
 
-                    if (w0 > 0.0 && w1 > 0.0 && w2 > 0.0)
+                    if (w0 >= 0.0 && w1 >= 0.0 && w2 >= 0.0)
                     {
                         // Convert to barycentric coordinates
                         w0 *= triArea2Reciprocal;
