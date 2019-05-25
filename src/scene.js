@@ -7,12 +7,7 @@ class Scene
 
         this.texWall = new Texture("./textures/wall.png");
         this.texStone = new Texture("./textures/stone.png");
-        
-        this.cube1 = new Cube(new Vec3(0, 1.0, 0.0), 1.0, this.texWall);
-        this.cube2 = new Cube(new Vec3(0.5, 1.0, -1.0), 1.0, this.texWall);
-        this.cubesCenter = new Vec3(-2.5, 1.0, 0.0);
-        this.cubesOffsetDistance = 0.65;
-        this.cubesOffsetAngle = 0.0;
+        this.texBlue = new Texture("./textures/blue.png");
         
         let groundPlaneHW = 5.0;
         this.groundPlane = new Plane(new Vec3(-groundPlaneHW, 0.0, groundPlaneHW),
@@ -20,6 +15,14 @@ class Scene
                                     new Vec3(groundPlaneHW, 0.0, -groundPlaneHW),
                                     new Vec3(-groundPlaneHW, 0.0, -groundPlaneHW),
                                     this.texStone);
+
+        this.cube1 = new Cube(new Vec3(0, 1.0, 0.0), 1.0, this.texWall);
+        this.cube2 = new Cube(new Vec3(0.5, 1.0, -1.0), 1.0, this.texWall);
+        this.cubesCenter = new Vec3(-2.5, 1.0, 0.0);
+        this.cubesOffsetDistance = 0.65;
+        this.cubesOffsetAngle = 0.0;
+
+        this.sphere = new Icosphere(new Vec3(2.5, 1.0, 0.0), 0.5, this.texBlue);
 
         this.cameraPos = new Vec3(0, 0, 0);
         this.cameraTarget = new Vec3(0, 0, 0);
@@ -101,5 +104,6 @@ class Scene
         this.mgl.RenderObject(this.groundPlane);
         this.mgl.RenderObject(this.cube1);
         this.mgl.RenderObject(this.cube2);
+        this.mgl.RenderObject(this.sphere);
     }
 }
