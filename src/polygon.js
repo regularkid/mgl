@@ -14,6 +14,7 @@ class Polygon
         this.normal = normal;
         this.texture = texture;
 
+        // Cache average z-value for use in poly sorting
         this.zAvg = (paWorld.z + pbWorld.z + pcWorld.z) * 0.3333;
     }
 }

@@ -2,81 +2,18 @@ let canvas = document.getElementById("canvas");
 let ctx = canvas.getContext("2d", { alpha: false });
 let input = new Input(canvas);
 let lastTime = 0;
-let mgl = new MGL(canvas, ctx, 800/600);
-let texWall = new Texture("./textures/wall.png");
-let texStone = new Texture("./textures/stone.png");
-let cube = new Cube(new Vec3(0, 1.0, 0.0), 1.0, texWall);
-let cube2 = new Cube(new Vec3(0.5, 1.0, -1.0), 1.0, texWall);
-let groundPlaneHW = 5.0;
-let groundPlane = new Plane(new Vec3(-groundPlaneHW, 0.0, groundPlaneHW),
-                            new Vec3(groundPlaneHW, 0.0, groundPlaneHW),
-                            new Vec3(groundPlaneHW, 0.0, -groundPlaneHW),
-                            new Vec3(-groundPlaneHW, 0.0, -groundPlaneHW),
-                            texStone);
-mgl.lights.push(new Light(new Vec3(-1.0, 0.0, 0.0), new Color(0.3, 0.3, 0.3), new Color(1.0, 1.0, 1.0)));
-mgl.lights.push(new Light(new Vec3(0.0, -1.0, 0.0), new Color(0.3, 0.3, 0.3), new Color(1.0, 1.0, 1.0)));
-let lightColorsOn = false;
-
-let cameraPos = new Vec3(0, 0, 0);
-let cameraTarget = new Vec3(0, 0, 0);
-let cameraUp = new Vec3(0, 1, 0);
-let cameraAngleH = 300.0;
-let cameraAngleV = 20.0;
-let cameraDistance = 9.0;
-let cameraMinDistance = 15.0;
-let cameraMaxDistance = 50.0;
-let cameraRotateSpeed = 0.5;
-let cameraPanSpeed = 0.1;
-let cameraMinAngleV = 5.0;
-let cameraMaxAngleV = 60.0;
+let mgl = new MGL(canvas, ctx, canvas.width / canvas.height, 0xFFFFC9BF);
+let scene = new Scene(mgl, input);
 
 function GameLoop(curTime)
 {
     let dt = Math.min((curTime - lastTime) / 1000.0, 0.2);	
     lastTime = curTime;
 
-    if (input.isTouchActive)
-    {
-        cameraAngleH += input.dx * cameraRotateSpeed;
-        cameraAngleV = Math.max(Math.min(cameraAngleV + input.dy * cameraRotateSpeed, cameraMaxAngleV), cameraMinAngleV);
-    }
-    
-    cameraDistance = Math.max(Math.min(cameraDistance + input.wheel*0.01, cameraMaxDistance), cameraMinDistance);
-
-    let cameraDistanceH = Math.cos(cameraAngleV*Math.PI/180.0) * cameraDistance;
-    let cameraOffset = new Vec3(Math.cos(cameraAngleH*Math.PI/180.0) * cameraDistanceH,
-                                Math.sin(cameraAngleV*Math.PI/180.0) * cameraDistance,
-                                Math.sin(cameraAngleH*Math.PI/180.0) * cameraDistanceH);
-
-    cameraPos = cameraTarget.Add(cameraOffset);
-
-    mgl.SetCameraLookAt(cameraPos, cameraTarget, cameraUp);
-
-    // DEBUG
-    let rotateAngle = (90.0 * (Math.PI / 180.0)) * dt;
-    let cosAngle = Math.cos(rotateAngle);
-    let sinAngle = Math.sin(rotateAngle);
-    let tmRotate = new Matrix4x4(new Vec3(cosAngle, 0.0, -sinAngle),
-                                 new Vec3(0.0, 1.0, 0.0),
-                                 new Vec3(sinAngle, 0.0, cosAngle),
-                                 new Vec3(0.0, 0.0, 0.0));
-
-    rotateAngle = (45.0 * (Math.PI / 180.0)) * dt;
-    cosAngle = Math.cos(rotateAngle);
-    sinAngle = Math.sin(rotateAngle);
-    let tmRotate2 = new Matrix4x4(new Vec3(1.0, 0.0, 0.0),
-                                 new Vec3(0.0, cosAngle, sinAngle),
-                                 new Vec3(0.0, -sinAngle, cosAngle),
-                                 new Vec3(0.0, 0.0, 0.0));
-
-    tmRotate.MultiplyMatrix4x4Self(tmRotate2);
-
-    cube.tm = cube.tm.MultiplyMatrix4x4(tmRotate);
+    scene.Update(dt);
 
     mgl.ClearBuffers();
-    mgl.RenderObject(groundPlane, "#F00");
-    mgl.RenderObject(cube, "#F00");
-    mgl.RenderObject(cube2, "#F00");
+    scene.Render();
     mgl.RenderBuffers();
 
     //TEMP!	
@@ -90,24 +27,3 @@ function GameLoop(curTime)
 }
 
 window.requestAnimationFrame(GameLoop);
-
-function ToggleLightColors()
-{
-    lightColorsOn = !lightColorsOn;
-    if (lightColorsOn)
-    {
-        mgl.lights[0].ambient = new Color(0.3, 1.0, 0.3);
-        mgl.lights[0].diffuse = new Color(0.4, 10.0, 0.4);
-
-        mgl.lights[1].ambient = new Color(0.4, 0.4, 1.0);
-        mgl.lights[1].diffuse = new Color(0.4, 0.4, 10.0);
-    }
-    else
-    {
-        mgl.lights[0].ambient = new Color(0.3, 0.3, 0.3);
-        mgl.lights[0].diffuse = new Color(1.0, 1.0, 1.0);
-
-        mgl.lights[1].ambient = new Color(0.3, 0.3, 0.3);
-        mgl.lights[1].diffuse = new Color(1.0, 1.0, 1.0);
-    }
-}

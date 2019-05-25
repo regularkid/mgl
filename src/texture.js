@@ -19,7 +19,6 @@ class Texture
 
     cachePixelColors()
     {
-        this.pixels = new Array(this.width * this.height);
         this.pixelsRGB = new Array(this.width * this.height);
         for (let y = 0; y < this.height; y++)
         {
@@ -29,25 +28,12 @@ class Texture
                 let r = color[0];
                 let g = color[1];
                 let b = color[2];
-                this.pixels[(y * this.width) + x] = 0xFF000000 | ((b << 16) & 0xFFFF0000) | ((g << 8) & 0xFF00FF00) | (r & 0xFF0000FF);
 
+                // Convert to 32-bit ABGR format (colors will be flipped on any browser that isn't)
                 let colorRGB = new Color(r / 255.0, g / 255.0, b / 255.0);
                 this.pixelsRGB[(y * this.width) + x] = colorRGB;
             }
         }
-    }
-
-    GetPixel(uv)
-    {
-        let x = Math.round((this.width - 1)*uv.x);
-        let y = Math.round((this.height - 1)*uv.y);
-
-        if (this.pixels === undefined || x < 0 || y < 0 || x >= this.width || y >= this.height)
-        {
-            return 0xFFFF00FF;
-        }
-
-        return this.pixels[(y * this.width) + x];
     }
 
     GetPixelRGB(uv)
@@ -55,7 +41,8 @@ class Texture
         let x = Math.round((this.width - 1)*uv.x);
         let y = Math.round((this.height - 1)*uv.y);
 
-        if (this.pixels === undefined || x < 0 || y < 0 || x >= this.width || y >= this.height)
+        // TODO: Support UVs >1 or <0
+        if (this.pixelsRGB === undefined || x < 0 || y < 0 || x >= this.width || y >= this.height)
         {
             return new Color(1.0, 0.0, 1.0);
         }

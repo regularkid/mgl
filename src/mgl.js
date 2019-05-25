@@ -1,6 +1,6 @@
 class MGL
 {
-    constructor(canvas, ctx, aspectRatio)
+    constructor(canvas, ctx, aspectRatio, clearColor)
     {
         this.canvas = canvas;
         this.ctx = ctx;
@@ -12,6 +12,7 @@ class MGL
         this.framebuffer = ctx.getImageData(0, 0, this.screenWidth, this.screenHeight);
         this.framebuffer32Bit = new Uint32Array(this.framebuffer.data.buffer);
         this.zBuffer = new Float32Array(this.screenWidth * this.screenHeight);
+        this.clearColor = clearColor;
 
         this.screenHalfWidthOverAspectRatio = this.screenHalfWidth / aspectRatio;
         this.viewPlaneHalfWidth = aspectRatio;
@@ -26,7 +27,7 @@ class MGL
 
     PerspectiveProjection(p)
     {
-        let scale = 3.5;
+        let scale = 3.5;    // Focal length scaling
         return new Vec3(this.screenHalfWidth + (((p.x*scale) / -p.z) * this.screenHalfWidthOverAspectRatio),
                         this.screenHalfHeight - (((p.y*scale) / -p.z) * this.screenHalfHeight),
                         -p.z);
@@ -34,19 +35,21 @@ class MGL
 
     ClearBuffers()
     {
-        this.framebuffer32Bit.fill(0xFF000000);
+        this.framebuffer32Bit.fill(this.clearColor);
         this.zBuffer.fill(Number.MAX_SAFE_INTEGER);
         this.polys = [];
     }
 
     RenderBuffers()
     {
+        // Render front to back (z-buffer will discard pixels)
         this.polys.sort((a, b) => b.zAvg - a.zAvg);
 
         for (let i = 0; i < this.polys.length; i++)
         {
             let poly = this.polys[i];
 
+            // Clip poly to screen bounds
             let xMin = Math.max(Math.round(Math.min(poly.paScreen.x, Math.min(poly.pbScreen.x, poly.pcScreen.x))), 0.0);
             let xMax = Math.min(Math.round(Math.max(poly.paScreen.x, Math.max(poly.pbScreen.x, poly.pcScreen.x))), this.screenWidth - 1);
             let yMin = Math.max(Math.round(Math.min(poly.paScreen.y, Math.min(poly.pbScreen.y, poly.pcScreen.y))), 0.0);
@@ -57,7 +60,7 @@ class MGL
 
             // Vales used for barycentric coordinates
             let w0, w1, w2 = 0.0;
-            let triArea2Reciprocal = 1.0 / this.SignedParallelogramArea2D(poly.paScreen, poly.pbScreen, poly.pcScreen);
+            let oneOverTriArea = 1.0 / this.SignedParallelogramArea2D(poly.paScreen, poly.pbScreen, poly.pcScreen);
 
             // Values used to calculate perspective correct interpolation
             let paOneOverZ = 1.0 / poly.paScreen.z;
@@ -102,18 +105,16 @@ class MGL
 
                     if (w0 >= 0.0 && w1 >= 0.0 && w2 >= 0.0)
                     {
-                        // Convert to barycentric coordinates
-                        w0 *= triArea2Reciprocal;
-                        w1 *= triArea2Reciprocal;
-                        w2 *= triArea2Reciprocal;
+                        // Convert to barycentric coordinates (divide each by total tri area)
+                        w0 *= oneOverTriArea;
+                        w1 *= oneOverTriArea;
+                        w2 *= oneOverTriArea;
 
                         // Perspective correct interpolation
                         ptZ = 1.0 / (paOneOverZ*w0 + pbOneOverZ*w1 + pcOneOverZ*w2);
                         
                         if (ptZ < this.zBuffer[bufferIdx])
                         {
-                            this.zBuffer[bufferIdx] = ptZ;
-
                             // Texture
                             ptUV.x = (paUVOverZ.x*w0 + pbUVOverZ.x*w1 + pcUVOverZ.x*w2) * ptZ;
                             ptUV.y = (paUVOverZ.y*w0 + pbUVOverZ.y*w1 + pcUVOverZ.y*w2) * ptZ;
@@ -121,7 +122,9 @@ class MGL
                             color.r = colorTex.r * lightColor.r;
                             color.g = colorTex.g * lightColor.g;
                             color.b = colorTex.b * lightColor.b;
+
                             this.framebuffer32Bit[(y * this.screenWidth) + x] = color.Get32Bit();
+                            this.zBuffer[bufferIdx] = ptZ;
                         }
                     }
 
@@ -185,6 +188,9 @@ class MGL
         this.cameraPos = pos;
         this.cameraDir = zAxis.Invert();
 
+        // Invert = transpose for orthonormal matrices (basis vectors are normal and orthogonal).
+        // We could multiply basis TM against -translation TM, but quicker to just calculate final column
+        // since everything else will cancel in normal matrix multiply.
         this.viewMatrix.c0 = new Vec3(xAxis.x, yAxis.x, zAxis.x);
         this.viewMatrix.c1 = new Vec3(xAxis.y, yAxis.y, zAxis.y);
         this.viewMatrix.c2 = new Vec3(xAxis.z, yAxis.z, zAxis.z);
