@@ -22,7 +22,8 @@ class Scene
         this.cubesOffsetDistance = 0.65;
         this.cubesOffsetAngle = 0.0;
 
-        this.sphere = new Icosphere(new Vec3(2.5, 1.0, 0.0), 0.5, this.texBlue);
+        this.sphere = new Icosphere(new Vec3(2.5, 1.0, 0.0), 1.0, 2, this.texBlue);
+        this.sphereBounceAngle = 0;
 
         this.cameraPos = new Vec3(0, 0, 0);
         this.cameraTarget = new Vec3(0, 0, 0);
@@ -45,6 +46,7 @@ class Scene
     {
         this.UpdateCamera(dt);
         this.UpdateCubes(dt);
+        this.UpdateSphere(dt);
     }
 
     UpdateCamera(dt)
@@ -70,7 +72,9 @@ class Scene
                                     Math.sin(this.cameraAngleH*Math.PI/180.0) * cameraDistanceH);
 
         this.cameraPos = this.cameraTarget.Add(cameraOffset);
-        this.mgl.SetCameraLookAt(this.cameraPos, this.cameraTarget, this.cameraUp);
+        this.mgl.SetCameraLookAt(this.cameraPos.Add(new Vec3(0.0, 1.0, 0.0)),
+                                 this.cameraTarget.Add(new Vec3(0.0, 1.0, 0.0)),
+                                 this.cameraUp);
     }
 
     UpdateCubes(dt)
@@ -97,6 +101,15 @@ class Scene
 
         this.cube1.tm = this.cube1.tm.MultiplyMatrix4x4(tmRotate);
         this.cube2.tm = this.cube2.tm.MultiplyMatrix4x4(tmRotate);
+    }
+
+    UpdateSphere(dt)
+    {
+        // Bounce!
+        let bounceHeight = 3.0;
+        this.sphereBounceAngle = (this.sphereBounceAngle + dt*270.0) % 360.0;
+        let bounceAngleRad = this.sphereBounceAngle * Math.PI / 180.0;
+        this.sphere.tm.c3.y = Math.abs(Math.sin(bounceAngleRad)*bounceHeight) + 1.0;
     }
 
     Render()

@@ -17,10 +17,10 @@ function GameLoop(curTime)
     mgl.RenderBuffers();
 
     //TEMP!	
-    ctx.font = `Bold 16px Arial`;	
-    ctx.fillStyle = "#FFF";	
-    let fps = 1.0 / dt;
-    ctx.fillText(`${Math.floor(fps)}`, 10, 20);
+    // ctx.font = `Bold 16px Arial`;	
+    // ctx.fillStyle = "#FFF";	
+    // let fps = 1.0 / dt;
+    // ctx.fillText(`${Math.floor(fps)}`, 10, 20);
 
     input.PostUpdate();
     window.requestAnimationFrame(GameLoop);
